@@ -1,115 +1,66 @@
-import React, { useState } from "react";
+import { useState } from "react";
+import "./App.css";
 
-const App = () => {
-  const [flag, setFlag] = useState(false);
-  const [username, setUsername] = useState("");
-  const [email, setEmail] = useState("");
-  const [phone, setPhone] = useState("");
-  const [dob, setDob] = useState("");
-
-  const modalOpen = () => {
-    setFlag(true);
+function App() {
+  const [isOpen, setIsOpen] = useState(false);
+  const clickHandler = () => {
+    setIsOpen(true);
   };
 
-  const modalClose = () => {
-    setFlag(false);
+  const closeHandler = (e) => {
+    console.log(e.target.className);
+    if (e.target.className === "modal-content") setIsOpen(false);
   };
 
-  const formSubmit = (e) => {
+  const submitHandler = (e) => {
     e.preventDefault();
-
-    let isValid = true;
-
-    if (!email.includes("@")) {
-      alert("Invalid email. Please check your email address.");
-      isValid = false;
-    }
-
-    if (phone.length !== 10) {
+    if (e.target.phoneNo.value.toString().length !== 10) {
       alert("Invalid phone number. Please enter a 10-digit phone number.");
-      isValid = false;
-    }
-
-    const selectedDob = new Date(dob);
-    const currentDate = new Date();
-    if (selectedDob > currentDate) {
+    } else if (new Date(e.target.dob.value).getTime() > Date.now()) {
       alert("Invalid date of birth. Date of birth cannot be in the future.");
-      isValid = false;
+    } else {
+      e.target.username.value = "";
+      e.target.email.value = "";
+      e.target.phoneNo.value = "";
+      e.target.dob.value = "";
     }
-
-    if (isValid) {
-      setUsername("");
-      setEmail("");
-      setPhone("");
-      setDob("");
-      console.log({
-        Username: username,
-        Email: email,
-        Phone: phone,
-        DOB: dob,
-      });
-    }
+    console.log(e.target.dob.value);
   };
 
   return (
-    <div className="main">
-      <h1>User Details Modal</h1>
-      <button onClick={modalOpen}>Open Form</button>
-
-      {flag && (
-        <div className="modal-overlay" onClick={modalClose}>
-          <div className="modal-content" onClick={(e) => e.stopPropagation()}>
-            <form onSubmit={formSubmit}>
+    <div className="App">
+      <div className="modal">
+        <h1>User Details Modal</h1>
+        <button onClick={clickHandler}>Open Form</button>
+        {isOpen && (
+          <div className="modal-content" onClick={closeHandler}>
+            <form onSubmit={submitHandler}>
               <h2>Fill Details</h2>
-              <div>
-                <label>Username:</label>
-                <br />
-                <input
-                  type="text"
-                  required
-                  value={username}
-                  onChange={(e) => setUsername(e.target.value)}
-                />
+              <div className="input-group">
+                <label htmlFor="username">Username: </label>
+                <input type="text" name="username" id="username" />
               </div>
-              <div>
-                <label>Email Address:</label>
-                <br />
-                <input
-                  type="text"
-                  required
-                  value={email}
-                  onChange={(e) => setEmail(e.target.value)}
-                />
+              <div className="input-group">
+                <label htmlFor="email">Email Address:</label>
+                <input type="email" name="email" id="email" required />
               </div>
-              <div>
-                <label>Phone Number:</label>
-                <br />
-                <input
-                  type="number"
-                  required
-                  value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                />
+              <div className="input-group">
+                <label htmlFor="phoneNo">Phone Number:</label>
+                <input type="number" name="phoneNo" id="phone" required />
               </div>
-              <div>
-                <label>Date of Birth:</label>
-                <br />
-                <input
-                  type="date"
-                  required
-                  value={dob}
-                  onChange={(e) => setDob(e.target.value)}
-                />
+              <div className="input-group">
+                <label htmlFor="dob">Date of Birth:</label>
+                <input type="date" name="dob" id="dob" />
               </div>
-              <div>
-                <input type="submit" className="submit-button" />
-              </div>
+              <button type="submit" className="submit-button">
+                Submit
+              </button>
             </form>
           </div>
-        </div>
-      )}
+        )}
+      </div>
     </div>
   );
-};
+}
 
 export default App;
